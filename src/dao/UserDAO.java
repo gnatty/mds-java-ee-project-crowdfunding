@@ -1,5 +1,8 @@
 package dao;
 
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +20,31 @@ public class UserDAO extends DAO  {
 		
 	}
 	
+	@SuppressWarnings("unchecked")
+	public List<UserEntity> login(String username, String password) {
+		String query = "SELECT u FROM UserEntity u WHERE u.username = :username AND u.password = :password";
+		init();
+		getT().begin();
+		List<UserEntity> e = getEm().createQuery(query)
+				.setParameter("username", username)
+				.setParameter("password", password)
+				.getResultList();
+		getT().commit();
+		destroy();
+		return e;
+	}
 	
+	@SuppressWarnings("unchecked")
+	public List<UserEntity> list() {
+		String query = "SELECT u FROM UserEntity u";
+		init();
+		getT().begin();
+		List<UserEntity> e = getEm().createQuery(query)
+				.getResultList();
+		getT().commit();
+		destroy();
+		return e;
+	}
 	
 	
 }

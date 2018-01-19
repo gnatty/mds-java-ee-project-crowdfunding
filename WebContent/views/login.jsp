@@ -1,6 +1,10 @@
 <%@ page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
 
+<jsp:useBean id="formError" class="utils.FormErrorUtils">
+ <jsp:setProperty name="formError" property="initFrom" value="${empty errors ? null : errors}" />
+</jsp:useBean>
+
 <t:template>
 
 <div class="container col-5">
@@ -10,27 +14,33 @@
 <form method="POST" action="">
 
 <div class="form-group">
- <label for="username">Username</label>
+ <label for="username">UserName</label>
  <input 
-  class="form-control <c:out default="" value="${empty errorUsername?'':'is-invalid'}"/>" 
+  class="form-control <c:out default="" value="${formError.isErrorField('username')!=true?'':'is-invalid'}"/>" 
   type="text" 
-  name="userjjname" 
+  name="username"
   value="<c:out default="" value="${param.username}"/>"
    />
  <div class="invalid-feedback">
-  Empty username
+  Empty UserName
  </div>
 </div>
 
+
+
+
 <div class="form-group">
+
+<c:out value="${formError.ok('oui')}" />
+
  <label for="username">Password</label>
  <input 
-  class="form-control <c:out default="" value="${empty errorPassword?'':'is-invalid'}"/>" 
+  class="form-control <c:out default="" value="${formError.isErrorField('password')!=true?'':'is-invalid'}"/>" 
   type="text" 
   name="password" 
    />
  <div class="invalid-feedback">
-  Empty password
+  Empty Password
  </div>
 </div>
 

@@ -8,10 +8,10 @@ import entity.UserEntity;
 
 public class DAO {
 	
-	private String configName = "crowdfunding_project";
-	private EntityManagerFactory 	emf;
-	private EntityManager 			em;
-	private EntityTransaction 		t;
+	private static String configName = "crowdfunding_project";
+	private static EntityManagerFactory emf;
+	private static EntityManager em;
+	private static EntityTransaction t;
 	
 	public void init() {
 		emf = Persistence.createEntityManagerFactory(configName);
@@ -29,6 +29,14 @@ public class DAO {
 		em.persist(o);
 		t.commit();
 		destroy();
+	}
+	
+	public EntityManager getEm() {
+		return em;
+	}
+	
+	public EntityTransaction getT() {
+		return t;
 	}
 	
 }

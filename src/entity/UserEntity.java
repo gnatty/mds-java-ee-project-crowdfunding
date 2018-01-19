@@ -22,6 +22,9 @@ public class UserEntity implements Serializable {
 	
 	@Column(name="use_role")
 	private int role;
+
+	public UserEntity() {
+	}
 	
 	public UserEntity(String username, String password, int role) {
 		super();

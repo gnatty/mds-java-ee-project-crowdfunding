@@ -1,12 +1,23 @@
 package servlet.api;
 
 import java.io.IOException;
+import java.util.List;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.json.simple.JSONObject;
+import org.json.simple.JSONArray;
+import org.json.simple.ItemList;
 import utils.ServletUtils;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+
+import dao.UserDAO;
+import entity.UserEntity;
 
 @WebServlet(
 		name="UserServletApi", 
@@ -16,37 +27,64 @@ public class UserServletApi extends ServletUtils {
 	
 	private static final long serialVersionUID = 1L;
      
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		if( request.getPathInfo().equals(null) ) {
-			return;
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		String key = getUrlParam(req);
+	    switch(key) {
+	    case "":
+	    	return;
+	    case "login":
+	    	returnGsonResponse(resp, null, 1, 200);
+	    	return;
+	    case "logout":
+	    	returnGsonResponse(resp, null, 1, 200);
+	    	return;
+	    case "register":
+	    	returnGsonResponse(resp, null, 1, 200);
+	    	return;
+	    case "list":
+	    	list(req, resp);
+	    	return;
+	    }
+	}
+
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		String key = getUrlParam(req);
+	    switch(key) {
+	    case "":
+	    	returnGsonResponse(resp, null, 1, 200);
+	    	return;
+	    case "login":
+	    	login(req, resp);
+	    	return;
+	    case "logout":
+	    	returnGsonResponse(resp, null, 1, 200);
+	    	return;
+	    case "register":
+	    	returnGsonResponse(resp, null, 1, 200);
+	    	return;
+	    }
+	}
+	
+	public void list(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+		UserDAO userDAO = new UserDAO();
+		List<UserEntity> res = userDAO.list();
+		returnGsonResponse(resp, listToJsonElement(res), 1, 200);
+	}
+	
+	public void login(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+		String username = "";
+		String password = "";
+		
+		if( isParamExistNotEmpty(req, "username") && isParamExistNotEmpty(req, "password")) {
+			username = req.getParameter("username");
+			password = req.getParameter("password");
+			
+			UserDAO userDAO = new UserDAO();
+			List<UserEntity> res = userDAO.login(username, password);
+			returnGsonResponse(resp, listToJsonElement(res), 1, 200);
+		} else {
+			returnGsonResponse(resp, null, 0, 400);
 		}
-		String key = request.getPathInfo().substring(1);
-		
-		returnJsonReponse(response, returnJson(key, 1, 200));
-	}
-
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		response.getWriter().append("Served at: ").append(request.getPathInfo());
 	}
 	
-	@SuppressWarnings("unchecked")
-	public String returnJson(Object data, int state, int code) {
-		String stateVal = (state==1)?"success":"error";
-		
-		JSONObject objContent = new JSONObject();
-		objContent.put("code", code);
-		objContent.put("data", data);
-		JSONObject obj = new JSONObject();
-	    obj.put(stateVal, objContent);
-	    
-	    return obj.toJSONString();
-	}
-	
-	public HttpServletResponse returnJsonReponse(HttpServletResponse resp, String data) throws IOException {
-		resp.setContentType("application/json");
-		resp.getWriter().append(data);
-		return resp;
-	}
-
 }
