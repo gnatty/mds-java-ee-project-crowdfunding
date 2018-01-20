@@ -57,21 +57,26 @@ public class FormErrorUtils {
 				.stream()
 				.filter(filterByName(name))
 				.collect(Collectors.toList());
-
+		
 		return res.size() > 0;
 	}
 	
-	public void getMessage(String name, String code) {
-		FormErrorEntity res = errors
-				.stream()
+	public String getMessage(String name, String code) {
+		Optional<FormErrorEntity> res = errors.stream()
 				.filter(filterByNameAndCode(name, code))
+				.findFirst();
+		if(res.isPresent()) {
+			return res.get().getMessage();
+		} else {
+			return "";
+		}
 	}
 	
 	public Predicate<FormErrorEntity> filterByName(String name) {
 		return (f) -> (f.getName().equals(name));
 	}
 	
-	public Predicate<FormErrorEntity> filterByNameAndCode(String name) {
+	public Predicate<FormErrorEntity> filterByNameAndCode(String name, String code) {
 		return (f) -> (f.getName().equals(name));
 	}
 	

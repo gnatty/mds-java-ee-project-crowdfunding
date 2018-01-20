@@ -22,16 +22,11 @@
   value="<c:out default="" value="${param.username}"/>"
    />
  <div class="invalid-feedback">
-  Empty UserName
+  <c:out value="${formError.getMessage('username', 'EMPTY_VALUE')}" />
  </div>
 </div>
 
-
-
-
 <div class="form-group">
-
-<c:out value="${formError.ok('oui')}" />
 
  <label for="username">Password</label>
  <input 
@@ -40,7 +35,7 @@
   name="password" 
    />
  <div class="invalid-feedback">
-  Empty Password
+  <c:out value="${formError.getMessage('password', 'EMPTY_VALUE')}" />
  </div>
 </div>
 
