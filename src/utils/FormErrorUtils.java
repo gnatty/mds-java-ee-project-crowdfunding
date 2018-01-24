@@ -14,7 +14,6 @@ public class FormErrorUtils {
 	private FormErrorUtils initFrom;
 
 	public FormErrorUtils() {
-		System.out.println("constructor called");
 		errors = new ArrayList<FormErrorEntity>();
 	}
 	
@@ -31,7 +30,6 @@ public class FormErrorUtils {
 	}
 
 	public void setInitFrom(FormErrorUtils initFrom) {
-		System.out.println("setErrors called");
 		if(initFrom != null) {
 			errors = initFrom.getErrors();
 		}
@@ -51,13 +49,10 @@ public class FormErrorUtils {
 	}
 	
 	public boolean isErrorField(String name) {
-		System.out.println("------------> isErrorField <------------");
-		System.out.println(name);
 		List<FormErrorEntity> res = errors
 				.stream()
 				.filter(filterByName(name))
 				.collect(Collectors.toList());
-		
 		return res.size() > 0;
 	}
 	
@@ -65,19 +60,24 @@ public class FormErrorUtils {
 		Optional<FormErrorEntity> res = errors.stream()
 				.filter(filterByNameAndCode(name, code))
 				.findFirst();
-		if(res.isPresent()) {
+		if(res.isPresent())
 			return res.get().getMessage();
-		} else {
-			return "";
-		}
+		return "";
 	}
+
+	
+	/**
+	 ******************************
+	 ********* PREDICATE **********
+	 ******************************
+	 */
 	
 	public Predicate<FormErrorEntity> filterByName(String name) {
-		return (f) -> (f.getName().equals(name));
+		return (e) -> (e.getName().equals(name));
 	}
 	
 	public Predicate<FormErrorEntity> filterByNameAndCode(String name, String code) {
-		return (f) -> (f.getName().equals(name));
+		return (e) -> (e.getName().equals(name) && e.getCode().equals(code));
 	}
 	
 }
