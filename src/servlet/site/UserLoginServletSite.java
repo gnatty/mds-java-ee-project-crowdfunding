@@ -7,6 +7,10 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.http.NameValuePair;
+
+import com.google.gson.JsonObject;
+
 import utils.ServletUtils;
 import utils.FormErrorUtils;
 import utils.ApiRequestUtils;
@@ -32,9 +36,9 @@ public class UserLoginServletSite extends ServletUtils {
 		ApiRequestUtils api = new ApiRequestUtils();
 		
 		System.out.println(" -----> GET REQUEST <-----");
-		api.get("/user/login");
-		System.out.println(" -----> POST REQUEST <-----");
-		api.post("/user/login?username=root&password=root");
+		JsonObject dataGet = api.setData();
+		dataGet.addProperty("tac", "oui");
+		api.get("/user/logout", dataGet.toString());
 		
 		FormErrorUtils errors = new FormErrorUtils();
 		String username = "";
@@ -50,6 +54,12 @@ public class UserLoginServletSite extends ServletUtils {
 			// --- SUCCESS.
 			username = req.getParameter("username");
 			password = req.getParameter("password");
+			
+			System.out.println(" -----> POST REQUEST <-----");
+			JsonObject data = api.setData();
+			data.addProperty("username", username);
+			data.addProperty("password", password);
+			api.post("/user/login", data.toString());
 			
 			req.getRequestDispatcher(fileName).forward(req, resp);
 		}
