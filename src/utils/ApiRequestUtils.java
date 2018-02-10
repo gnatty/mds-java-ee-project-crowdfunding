@@ -1,19 +1,13 @@
 package utils;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Base64;
 import com.google.gson.JsonObject;
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.WebResource;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 
-import org.apache.commons.codec.binary.Base64;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
@@ -25,36 +19,58 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
 public class ApiRequestUtils {
-	
+
 	private static String endpoint = "http://localhost:8080/MdsCrowdProject/api";
+	private JsonObject data;
+	private String action;
+	private String method;
+	private String responseData;
+	private int responseCode;
+	
+	public ApiRequestUtils(String _method, String _action) {
+		this.data = new JsonObject();
+		this.method = _method;
+		this.action = _action;
+	}
 	
 	public ApiRequestUtils() {
-		
 	}
 	
-	public void get(String action, String data) throws IOException {
-		
-		HttpClient client = HttpClientBuilder.create().build();
-		
-	
-        HttpGet get = new HttpGet(endpoint + action + "?data=" + base64Encode(data));
-        HttpResponse response = client.execute(get);
-        System.out.println(EntityUtils.toString(response.getEntity()));
-       
+	public JsonObject getData() {
+		return this.data;
 	}
 	
-	public void post(String action, String data) throws IOException {
-
-		HttpClient client = HttpClientBuilder.create().build();
-        HttpPost post = new HttpPost(endpoint + action);
-
-        List<NameValuePair> arguments = new ArrayList<>(1);
-        arguments.add(new BasicNameValuePair("data", data));
-        
-        post.setEntity(new UrlEncodedFormEntity(arguments));
-        HttpResponse response = client.execute(post);
-        
-        System.out.println(EntityUtils.toString(response.getEntity()));   
+	public String getResponseData() {
+		return this.responseData;
+	}
+	
+	public int getResponseCode() {
+		return this.responseCode;
+	}
+	
+	public void addParameter(String name, String value) {
+		this.data.addProperty(name, value);
+	}
+	
+	public String getParameter(String name) {
+		return this.data.get(name).getAsString();
+	}
+	
+	public boolean isParamExist(String name) {
+		try {
+			this.getParameter(name);
+			return true;
+		} catch(NullPointerException e) {
+			return false;
+		}
+	}
+	
+	public String dataToString() {
+		return data.toString();
+	}
+	
+	public String dataToBase64() {
+		return this.base64Encode(this.dataToString());
 	}
 	
 	public JsonObject setData() {
@@ -62,15 +78,58 @@ public class ApiRequestUtils {
 	}
 	
 	public String base64Encode(String data) {
-		byte[] bytesEncoded = Base64.encodeBase64(data.getBytes());
-		return new String(bytesEncoded);
+		return Base64.getEncoder().encodeToString(data.getBytes());
 	}
 	
 	public String base64Decode(String data) {
-		byte[] valueDecoded = Base64.decodeBase64(data);
-		return new String(valueDecoded);
+		byte[] decoded = Base64.getDecoder().decode(data);
+		return new String(decoded);
+	}
+	
+	public void run() throws IOException {
+		switch(this.method) {
+		case "get":
+			this.get();
+			break;
+		case "post":
+			this.post();
+			break;
+		}
+	}
+	
+	public void setData(String data) {
+		try {
+			String tmpData = this.base64Decode(data);
+			this.data = new JsonParser().parse(tmpData).getAsJsonObject();
+		} catch(JsonSyntaxException e) {
+			this.data = new JsonObject();
+		}
+	}
+	
+	private void get() throws IOException {
+		// --- Create request with data parameter.
+		HttpClient client = HttpClientBuilder.create().build();
+        HttpGet get = new HttpGet(endpoint + this.action + "?data=" + this.dataToBase64());
+        // --- Execute query.
+        HttpResponse response = client.execute(get);
+        // --- Get Response.
+        this.responseData = EntityUtils.toString(response.getEntity());
+        this.responseCode = response.getStatusLine().getStatusCode();
+	}
+	
+	private void post() throws IOException {
+		// --- Create request.
+		HttpClient client = HttpClientBuilder.create().build();
+        HttpPost post = new HttpPost(endpoint + this.action);
+        // --- Insert data post.
+        List<NameValuePair> arguments = new ArrayList<>(1);
+        arguments.add(new BasicNameValuePair("data", this.dataToBase64()));
+        // --- Execute query.
+        post.setEntity(new UrlEncodedFormEntity(arguments));
+        HttpResponse response = client.execute(post);
+        // --- Get response.
+        this.responseData = EntityUtils.toString(response.getEntity());
+        this.responseCode = response.getStatusLine().getStatusCode();
 	}
 
-	
-	
 }

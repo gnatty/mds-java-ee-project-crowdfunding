@@ -30,16 +30,7 @@ public class UserLoginServletSite extends ServletUtils {
 		return;
 	}
 	
-	@SuppressWarnings("unused")
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		
-		ApiRequestUtils api = new ApiRequestUtils();
-		
-		System.out.println(" -----> GET REQUEST <-----");
-		JsonObject dataGet = api.setData();
-		dataGet.addProperty("tac", "oui");
-		api.get("/user/logout", dataGet.toString());
-		
 		FormErrorUtils errors = new FormErrorUtils();
 		String username = "";
 		String password = "";
@@ -56,10 +47,13 @@ public class UserLoginServletSite extends ServletUtils {
 			password = req.getParameter("password");
 			
 			System.out.println(" -----> POST REQUEST <-----");
-			JsonObject data = api.setData();
-			data.addProperty("username", username);
-			data.addProperty("password", password);
-			api.post("/user/login", data.toString());
+			ApiRequestUtils api = new ApiRequestUtils("post", "/user/login");
+			api.addParameter("username", username);
+			api.addParameter("password", password);
+			api.run();
+			
+			System.out.println(api.getResponseData());
+			System.out.println(api.getResponseCode());
 			
 			req.getRequestDispatcher(fileName).forward(req, resp);
 		}

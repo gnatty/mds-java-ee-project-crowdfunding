@@ -21,13 +21,18 @@ public class UserDAO extends DAO  {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<UserEntity> login(String username, String password) {
+	public List<UserEntity> login(String _username, String _password) {
+		
+		System.out.println("===> login");
+		System.out.println("value : " + _password);
+		System.out.println("value : " + _username);
+		
 		String query = "SELECT u FROM UserEntity u WHERE u.username = :username AND u.password = :password";
 		init();
 		getT().begin();
 		List<UserEntity> e = getEm().createQuery(query)
-				.setParameter("username", username)
-				.setParameter("password", password)
+				.setParameter("username", _username)
+				.setParameter("password", _password)
 				.getResultList();
 		getT().commit();
 		destroy();

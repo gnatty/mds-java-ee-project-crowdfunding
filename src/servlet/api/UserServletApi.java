@@ -12,6 +12,8 @@ import org.json.simple.JSONObject;
 import org.json.simple.JSONArray;
 
 import org.json.simple.ItemList;
+
+import utils.ApiRequestUtils;
 import utils.ServletUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -78,15 +80,13 @@ public class UserServletApi extends ServletUtils {
 	}
 	
 	public void login(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-		String username = "";
-		String password = "";
+		ApiRequestUtils api = new ApiRequestUtils();
+		api.setData(req.getParameter("data"));
 		
-		System.out.println(req.getParameter("data"));
-		
-		if( isParamExistNotEmpty(req, "username") && isParamExistNotEmpty(req, "password")) {
-			username = req.getParameter("username");
-			password = req.getParameter("password");
-			
+		if(api.isParamExist("username") && api.isParamExist("password")) {
+			String username = api.getParameter("username");
+			String password = api.getParameter("password");
+
 			UserDAO userDAO = new UserDAO();
 			List<UserEntity> res = userDAO.login(username, password);
 			returnGsonResponse(resp, listToJsonElement(res), 1, 200);
