@@ -7,46 +7,51 @@
 
 <t:template>
 
-<div class="container col-5">
+  <div class="container container-site">
 
-<h1>Log In</h1>
+    <h1>Sign in</h1>
 
-<form method="POST" action="">
+    <div class="row">
+      <div class="col-lg-6">
 
-<div class="form-group">
- <label for="username">UserName</label>
- <input 
-  class="form-control <c:out default="" value="${formError.isErrorField('username')!=true?'':'is-invalid'}"/>" 
-  type="text" 
-  name="username"
-  value="<c:out default="" value="${param.username}"/>"
-   />
- <div class="invalid-feedback">
-  <c:out value="${formError.getMessage('username', 'EMPTY_VALUE')}" />
- </div>
-</div>
+        <c:if test="${formError.isErrorField('login')==true}">
+          <div class="alert alert-danger" role="alert">
+            <c:out value="${formError.getMessage('login', 'WRONG_CREDENTIALS')}" />
+          </div>
+        </c:if>
 
-<div class="form-group">
+        <form method="POST" action="">
 
- <label for="username">Password</label>
- <input 
-  class="form-control <c:out default="" value="${formError.isErrorField('password')!=true?'':'is-invalid'}"/>" 
-  type="text" 
-  name="password" 
-   />
- <div class="invalid-feedback">
-  <c:out value="${formError.getMessage('password', 'EMPTY_VALUE')}" />
- </div>
-</div>
+          <div class="form-group">
+            <label for="inputAddress">Username</label>
+            <input 
+              type="text" 
+              class="form-control <c:out default="" value="${formError.isErrorField('username')!=true?'':'is-invalid'}"/>"
+              value="<c:out default="" value="${param.frmUsername}"/>"
+              name="frmUsername">
+            <div class="invalid-feedback">
+              <c:out value="${formError.getMessage('username', 'EMPTY_VALUE')}" />
+           </div>
+          </div>
 
-<div class="form-group">
- <button 
-  type="submit" 
-  class="btn btn-primary">Submit</button>
-</div>
+          <div class="form-group">
+            <label for="inputAddress">Password</label>
+            <input 
+              type="text" 
+              class="form-control <c:out default="" value="${formError.isErrorField('password')!=true?'':'is-invalid'}"/>" 
+              name="frmPassword">
+            <div class="invalid-feedback">
+              <c:out value="${formError.getMessage('password', 'EMPTY_VALUE')}" />
+            </div>
+          </div>
 
-</form>
+          <div class="form-group">
+            <button type="submit" class="btn btn-primary">submit</button>
+          </div>
 
-</div>
+        </form>
+      </div>
+    </div>
+  </div>
 
 </t:template>

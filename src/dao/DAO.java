@@ -14,7 +14,9 @@ public class DAO {
 	private static EntityTransaction t;
 	
 	public void init() {
-		emf = Persistence.createEntityManagerFactory(configName);
+		if(emf == null) {
+			emf = Persistence.createEntityManagerFactory(configName);
+		}
 		em 	= emf.createEntityManager();
 		t 	= em.getTransaction();
 	}

@@ -10,7 +10,6 @@ public class UserEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
 	@Column(name="use_id")
 	private int id;
 	
@@ -22,23 +21,73 @@ public class UserEntity implements Serializable {
 	
 	@Column(name="use_role")
 	private int role;
+	
+	@Column(name="use_firstname")
+	private String firstname;
+	
+	@Column(name="use_lastname")
+	private String lastname;
+	
+	@Column(name="use_mail")
+	private String mail;
+	
+	@Column(name="use_credit")
+	private String credit;
 
 	public UserEntity() {
 	}
 	
-	public UserEntity(String username, String password, int role) {
-		super();
+	public UserEntity(String username, String password, int role, String mail, String firstname, String lastname, String credit) {
 		this.username = username;
 		this.password = password;
 		this.role = role;
+		this.mail = mail;
+		this.firstname = firstname;
+		this.lastname = lastname;
+		this.credit = credit;
 	}
 	
-	public UserEntity(int id, String username, String password, int role) {
-		super();
+	public UserEntity(int id, String username, String password, int role, String mail, String firstname, String lastname, String credit) {
 		this.id = id;
 		this.username = username;
 		this.password = password;
 		this.role = role;
+		this.mail = mail;
+		this.firstname = firstname;
+		this.lastname = lastname;
+		this.credit = credit;
+	}
+
+	public String getFirstname() {
+		return firstname;
+	}
+
+	public void setFirstname(String firstname) {
+		this.firstname = firstname;
+	}
+
+	public String getLastname() {
+		return lastname;
+	}
+
+	public void setLastname(String lastname) {
+		this.lastname = lastname;
+	}
+
+	public String getMail() {
+		return mail;
+	}
+
+	public void setMail(String mail) {
+		this.mail = mail;
+	}
+
+	public String getCredit() {
+		return credit;
+	}
+
+	public void setCredit(String credit) {
+		this.credit = credit;
 	}
 
 	public int getId() {

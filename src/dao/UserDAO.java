@@ -1,42 +1,42 @@
 package dao;
 
-import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import entity.UserEntity;
 
 public class UserDAO extends DAO  {
 	
 	public static ArrayList<UserEntity> users = new ArrayList<UserEntity>();
 
-	public UserEntity bin(String username, String password, int role) {
-		return new UserEntity(username, password, role);
+	public UserEntity bin(String username, String password, int role, String mail, String firstname, String lastname, String credit) {
+		return new UserEntity(username, password, role, mail, firstname, lastname, credit);
 	}
 	
-	public void register(UserEntity user) {
+	public String register(String username, String password, String mail, String firstname, String lastname) {
+		if(this.isUsernameExist(username)) {
+			return "USERNAME_ALREADY_EXIST";
+		}
 		
+		UserEntity user = new UserEntity(username, password, 0, mail, firstname, lastname, "1000");
+		init();
+		getT().begin();
+		getEm().persist(user);
+		getT().commit();
+		destroy();
+		return "ACCOUNT_CREATED";
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<UserEntity> login(String _username, String _password) {
-		
-		System.out.println("===> login");
-		System.out.println("value : " + _password);
-		System.out.println("value : " + _username);
-		
+	public List<UserEntity> login(String username, String password) {
 		String query = "SELECT u FROM UserEntity u WHERE u.username = :username AND u.password = :password";
 		init();
 		getT().begin();
-		List<UserEntity> e = getEm().createQuery(query)
-				.setParameter("username", _username)
-				.setParameter("password", _password)
+		List<UserEntity> res = getEm().createQuery(query)
+				.setParameter("username", username)
+				.setParameter("password", password)
 				.getResultList();
 		getT().commit();
-		destroy();
-		return e;
+		return res;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -44,12 +44,26 @@ public class UserDAO extends DAO  {
 		String query = "SELECT u FROM UserEntity u";
 		init();
 		getT().begin();
-		List<UserEntity> e = getEm().createQuery(query)
+		List<UserEntity> res = getEm().createQuery(query)
 				.getResultList();
 		getT().commit();
-		destroy();
-		return e;
+		return res;
 	}
 	
+	@SuppressWarnings("unchecked")
+	public boolean isUsernameExist(String username) {
+		String query = "SELECT u FROM UserEntity u WHERE u.username = :username";
+		List<UserEntity> res;
+		init();
+		getT().begin();
+		res = getEm().createQuery(query)
+				.setParameter("username", username)
+				.getResultList();
+		getT().commit();
+		if(res.size() == 0) {
+			return false;
+		}
+		return true;
+	}
 	
 }

@@ -7,4 +7,9 @@
       <include-prelude>/WEB-INF/taglibs.jsp</include-prelude>
     </jsp-property-group>
   </jsp-config>
+
+  <error-page>
+   <error-code>404</error-code>
+   <location>/error-page-not-found</location>
+  </error-page>
 </web-app>

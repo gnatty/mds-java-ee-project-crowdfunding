@@ -4,9 +4,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Base64;
+
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
+import com.google.gson.internal.LinkedTreeMap;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -18,6 +21,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
+@SuppressWarnings("rawtypes")
 public class ApiRequestUtils {
 
 	private static String endpoint = "http://localhost:8080/MdsCrowdProject/api";
@@ -26,6 +30,7 @@ public class ApiRequestUtils {
 	private String method;
 	private String responseData;
 	private int responseCode;
+	private LinkedTreeMap result;
 	
 	public ApiRequestUtils(String _method, String _action) {
 		this.data = new JsonObject();
@@ -46,6 +51,10 @@ public class ApiRequestUtils {
 	
 	public int getResponseCode() {
 		return this.responseCode;
+	}
+	
+	public LinkedTreeMap getResult() {
+		return this.result;
 	}
 	
 	public void addParameter(String name, String value) {
@@ -106,6 +115,26 @@ public class ApiRequestUtils {
 		}
 	}
 	
+	private void setDataFromResponse(String data) {
+		Gson gson = new Gson();
+		LinkedTreeMap result = gson.fromJson(data , LinkedTreeMap.class);
+		if(this.getResponseCode() == 200) {
+			result = (LinkedTreeMap) result.get("success");
+			try {
+				this.result = (LinkedTreeMap) result.get("data");
+			} catch(ClassCastException e) {
+				// none.
+			}
+		} else {
+			result = (LinkedTreeMap) result.get("error");
+			try {
+				this.result = (LinkedTreeMap) result.get("data");
+			} catch(ClassCastException e) {
+				// none.
+			}
+		}
+	}
+	
 	private void get() throws IOException {
 		// --- Create request with data parameter.
 		HttpClient client = HttpClientBuilder.create().build();
@@ -115,6 +144,7 @@ public class ApiRequestUtils {
         // --- Get Response.
         this.responseData = EntityUtils.toString(response.getEntity());
         this.responseCode = response.getStatusLine().getStatusCode();
+        this.setDataFromResponse(this.responseData);
 	}
 	
 	private void post() throws IOException {
@@ -130,6 +160,7 @@ public class ApiRequestUtils {
         // --- Get response.
         this.responseData = EntityUtils.toString(response.getEntity());
         this.responseCode = response.getStatusLine().getStatusCode();
+        this.setDataFromResponse(this.responseData);
 	}
 
 }

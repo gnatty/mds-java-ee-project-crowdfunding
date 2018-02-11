@@ -7,7 +7,7 @@
    <property name="javax.persistence.jdbc.driver"     value="com.mysql.jdbc.Driver" />
    <property name="javax.persistence.jdbc.user"       value="mds" />
    <property name="javax.persistence.jdbc.password"   value="mdspwd" />
-   <property name="javax.persistence.jdbc.url"        value="jdbc:mysql://192.168.10.33:3306/crowdfunding_project" />
+   <property name="javax.persistence.jdbc.url"        value="jdbc:mysql://192.168.10.33:3306/crowdfunding_project?useSSL=false" />
    <property name="hibernate.hbm2ddl.auto"            value="update" />
   </properties>
  </persistence-unit>
