@@ -86,7 +86,7 @@ public class UserRegisterServletSite extends ServletUtils {
 				req.getRequestDispatcher(fileName).forward(req, resp);
 				break;
 			case "ACCOUNT_CREATED":
-				resp.sendRedirect(req.getContextPath() + "/");
+				resp.sendRedirect(req.getContextPath() + "/login");
 				break;
 			}
 		}
