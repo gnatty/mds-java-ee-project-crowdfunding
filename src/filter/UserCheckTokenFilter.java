@@ -16,7 +16,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import dao.UserDAO;
 import dao.UserTokenDAO;
+import entity.UserEntity;
 import utils.ApiRequestUtils;
 
 @WebFilter(urlPatterns="/*")
@@ -42,8 +44,10 @@ public class UserCheckTokenFilter implements Filter {
 		String apiPath = "/api";
 		String loginPage = "/login";
 		String registerPage = "/register";
+		String userProfileEditPage = "/user/profile-edit";
 		String projectCreatePage = "/project/create";
 		String userToken = (String) sess.getAttribute("token");
+		UserEntity userLogged = null;
 		boolean isUserLogged = false;
 		
 		System.out.println("request path : " + reqPath);
@@ -53,6 +57,8 @@ public class UserCheckTokenFilter implements Filter {
 			UserTokenDAO userTokenDAO = new UserTokenDAO();
 			if(userTokenDAO.check(userToken)) {
 				isUserLogged = true;
+				UserDAO userDAO = new UserDAO();
+				userLogged = userDAO.getUserByToken(userToken);
 			} else {
 				sess.removeAttribute("token");
 			}
@@ -60,6 +66,7 @@ public class UserCheckTokenFilter implements Filter {
 
 		// ---
 		sc.setAttribute("projetDir", req.getContextPath());
+		sc.setAttribute("userLogged", userLogged);
 		sc.setAttribute("isUserLogged", isUserLogged);
 		
 
@@ -68,7 +75,7 @@ public class UserCheckTokenFilter implements Filter {
 			return;
 		} else {
 			List<String> checkPage = Arrays.asList(loginPage, registerPage);
-			List<String> checkLoggedPage = Arrays.asList(projectCreatePage);
+			List<String> checkLoggedPage = Arrays.asList(projectCreatePage, userProfileEditPage);
 			
 			if(checkPage.contains(reqPath) && isUserLogged == false) {
 				chain.doFilter(request, response);

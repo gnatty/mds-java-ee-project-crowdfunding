@@ -115,7 +115,7 @@
           <a class="nav-link" href="#">About</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Categories</a>
+          <a class="nav-link" href="${projetDir}/project/by-category">Categories</a>
         </li>
 
         <c:if test="${isUserLogged == false}">
@@ -130,6 +130,12 @@
         <c:if test="${isUserLogged == true}">
           <li class="nav-item">
             <a class="nav-link" href="${projetDir}/project/create">Create a new project</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="${projetDir}/user/profile/${userLogged.id}">My profile</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="${projetDir}/user/profile-edit">Edit profile</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="${projetDir}/logout">Sign out</a>

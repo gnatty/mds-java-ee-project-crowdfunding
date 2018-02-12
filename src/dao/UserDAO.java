@@ -68,6 +68,22 @@ public class UserDAO extends DAO  {
 	}
 	
 	@SuppressWarnings("unchecked")
+	public UserEntity getUserById(int id) {
+		String query = "SELECT u FROM UserEntity u WHERE u.id = :id";
+		init();
+		getT().begin();
+		List<UserEntity> res = getEm().createQuery(query)
+				.setParameter("id", id)
+				.getResultList();
+		getT().commit();
+		if(res.size() == 0) {
+			// --- return null
+			return null;
+		}
+		return res.get(0);
+	}
+	
+	@SuppressWarnings("unchecked")
 	public UserEntity getUserByToken(String token) {
 		UserTokenDAO userTokenDAO = new UserTokenDAO();
 		List<UserTokenEntity> findUser = userTokenDAO.getData(token);
@@ -88,6 +104,13 @@ public class UserDAO extends DAO  {
 			return null;
 		}
 		return res.get(0);
+	}
+	
+	public void update(UserEntity user) {
+		init();
+		getT().begin();
+		getEm().merge(user);
+		getT().commit();
 	}
 
 }

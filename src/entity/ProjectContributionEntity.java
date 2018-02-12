@@ -45,4 +45,36 @@ public class ProjectContributionEntity implements Serializable {
 		this.amount = amount;
 	}
 
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public int getUser() {
+		return user;
+	}
+
+	public void setUser(int user) {
+		this.user = user;
+	}
+
+	public int getProject() {
+		return project;
+	}
+
+	public void setProject(int project) {
+		this.project = project;
+	}
+
+	public String getAmount() {
+		return amount;
+	}
+
+	public void setAmount(String amount) {
+		this.amount = amount;
+	}
+
 }
