@@ -11,7 +11,7 @@
 
     <c:if test="${isUserLogged == true && user.id == userLogged.id}">
       <h1>My profile</h1>
-      <a href="#" class="btn btn-secondary">Edit my profile</a>
+      <a href="${projetDir}/user/profile-edit" class="btn btn-secondary">Edit my profile</a>
     </c:if>
 
     <c:if test="${isUserLogged == false || user.id != userLogged.id}">

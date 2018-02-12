@@ -17,7 +17,7 @@
           <div class="card">
             <div class="fakeImg">
               <h1 class="title">${project.name}</h1>
-              <span class="badge badge-pill badge-warning curAmount">Needs ${project.amount}$</span>
+              <span class="badge badge-pill badge-warning curAmount">Needs ${project.amount}$ -- day left : ${project.dayLeft}</span>
             </div>
             <p>${project.description}</p>
             <a href="${projetDir}/project/detail/${project.id}" class="btn btn-secondary">More details</a>

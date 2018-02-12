@@ -15,4 +15,18 @@
 /WebContent/META-INF/persistence.xml
 ```
 
-![](https://octodex.github.com/images/yaktocat.png)
+# Routes
+
+| route path
+| ---
+| /
+| /login
+| /register
+| /project/by-category/*
+| /project/detail/*
+| /user/profile/*
+| /user/profile-edit
+
+# UML 
+
+![](https://raw.githubusercontent.com/gnatty/mds-java-ee-project-crowdfunding/master/docs/img/crund.png)

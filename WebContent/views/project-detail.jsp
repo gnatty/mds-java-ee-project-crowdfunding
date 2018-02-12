@@ -17,7 +17,7 @@
 
     <div class="row">
       <div class="col-lg-12">
-        <span class="badge badge-pill badge-warning curAmountProjectPage">${amount}$ / ${project.amount}$</span>
+        <span class="badge badge-pill badge-warning curAmountProjectPage">${amount}$ / ${project.amount}$ -- day left : ${project.dayLeft}</span>
       </div>
     </div>
 
@@ -29,7 +29,7 @@
 
       <div class="col-lg-6">
 
-        <c:if test="${isUserLogged == true}">
+        <c:if test="${isUserLogged == true && project.dayLeft > 0}">
           <h1>Help this project</h1>
 
           <c:if test="${formError.isErrorField('amount')==true}">

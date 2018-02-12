@@ -41,6 +41,8 @@ public class ProjectEntity implements Serializable {
 	@Column(name="pro_end_at")
 	private String endAt;
 	
+	private String dayLeft;
+	
 	public ProjectEntity() {
 	}
 
@@ -63,6 +65,16 @@ public class ProjectEntity implements Serializable {
 		this.amount = amount;
 		this.createdAt = createdAt;
 		this.endAt = endAt;
+	}
+
+	
+	
+	public String getDayLeft() {
+		return dayLeft;
+	}
+
+	public void setDayLeft(String dayLeft) {
+		this.dayLeft = dayLeft;
 	}
 
 	public int getId() {

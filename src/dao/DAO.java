@@ -17,7 +17,9 @@ public class DAO {
 		if(emf == null) {
 			emf = Persistence.createEntityManagerFactory(configName);
 		}
-		em 	= emf.createEntityManager();
+		if(em == null) {
+			em 	= emf.createEntityManager();
+		}
 		t 	= em.getTransaction();
 	}
 	

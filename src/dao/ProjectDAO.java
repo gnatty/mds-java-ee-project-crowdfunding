@@ -10,6 +10,8 @@ import entity.ProjectEntity;
 
 public class ProjectDAO extends DAO {
 	
+	public static Long oneDaySeconde = (long) 86400;
+	
 	public ProjectEntity create(int user, int category, String name, String description, String amount, String createdAt, String endAt) {
 		ProjectEntity project = new ProjectEntity(user, category, name, description, amount, createdAt, endAt);
 		init();
@@ -29,6 +31,24 @@ public class ProjectDAO extends DAO {
 		List<ProjectEntity> res = getEm().createQuery(query)
 				.getResultList();
 		getT().commit();
+		
+		for(ProjectEntity project : res) {
+			Long curTimestamp = System.currentTimeMillis() / 1000;
+			Long prevTimestamp = Long.parseLong(project.getCreatedAt());
+			Long interval = Long.parseLong(project.getEndAt());
+			prevTimestamp += interval;
+			int nbDayLeft = 0;
+			Long checkTimestamp = prevTimestamp - curTimestamp;
+			
+			if(checkTimestamp > 0) {
+				checkTimestamp = checkTimestamp / oneDaySeconde;
+				nbDayLeft = checkTimestamp.intValue();
+				if(nbDayLeft == 0 &&  checkTimestamp > 0) {
+					nbDayLeft = 1;
+				}
+			}
+			project.setDayLeft(String.valueOf(nbDayLeft));
+		}
 		return res;
 	}
 	
@@ -41,9 +61,29 @@ public class ProjectDAO extends DAO {
 				.setParameter("id", id)
 				.getResultList();
 		getT().commit();
+		
 		if(res.size() == 0) {
 			return null;
 		}
+		
+		for(ProjectEntity project : res) {
+			Long curTimestamp = System.currentTimeMillis() / 1000;
+			Long prevTimestamp = Long.parseLong(project.getCreatedAt());
+			Long interval = Long.parseLong(project.getEndAt());
+			prevTimestamp += interval;
+			int nbDayLeft = 0;
+			Long checkTimestamp = prevTimestamp - curTimestamp;
+			
+			if(checkTimestamp > 0) {
+				checkTimestamp = checkTimestamp / oneDaySeconde;
+				nbDayLeft = checkTimestamp.intValue();
+				if(nbDayLeft == 0 &&  checkTimestamp > 0) {
+					nbDayLeft = 1;
+				}
+			}
+			project.setDayLeft(String.valueOf(nbDayLeft));
+		}
+		
 		return res.get(0);
 	}
 	
@@ -56,6 +96,25 @@ public class ProjectDAO extends DAO {
 				.setParameter("cat", cat)
 				.getResultList();
 		getT().commit();
+
+		for(ProjectEntity project : res) {
+			Long curTimestamp = System.currentTimeMillis() / 1000;
+			Long prevTimestamp = Long.parseLong(project.getCreatedAt());
+			Long interval = Long.parseLong(project.getEndAt());
+			prevTimestamp += interval;
+			int nbDayLeft = 0;
+			Long checkTimestamp = prevTimestamp - curTimestamp;
+			
+			if(checkTimestamp > 0) {
+				checkTimestamp = checkTimestamp / oneDaySeconde;
+				nbDayLeft = checkTimestamp.intValue();
+				if(nbDayLeft == 0 &&  checkTimestamp > 0) {
+					nbDayLeft = 1;
+				}
+			}
+			project.setDayLeft(String.valueOf(nbDayLeft));
+		}
+		
 		return res;
 	}
 	
