@@ -57,4 +57,9 @@ public class ServletUtils extends HttpServlet {
 		return req.getParameterMap().containsKey(key) && !req.getParameter(key).equals("");
 	}
 	
+	public String getCurrentTimestamp() {
+		Long cur = System.currentTimeMillis() / 1000;
+		return String.valueOf(cur);
+	}
+	
 }

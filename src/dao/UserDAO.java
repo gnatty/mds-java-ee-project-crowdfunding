@@ -3,6 +3,7 @@ package dao;
 import java.util.ArrayList;
 import java.util.List;
 import entity.UserEntity;
+import entity.UserTokenEntity;
 
 public class UserDAO extends DAO  {
 	
@@ -66,4 +67,27 @@ public class UserDAO extends DAO  {
 		return true;
 	}
 	
+	@SuppressWarnings("unchecked")
+	public UserEntity getUserByToken(String token) {
+		UserTokenDAO userTokenDAO = new UserTokenDAO();
+		List<UserTokenEntity> findUser = userTokenDAO.getData(token);
+		if(findUser.size() == 0) {
+			// --- return null
+			return null;
+		}
+		
+		String query = "SELECT u FROM UserEntity u WHERE u.id = :id";
+		init();
+		getT().begin();
+		List<UserEntity> res = getEm().createQuery(query)
+				.setParameter("id", findUser.get(0).getUser())
+				.getResultList();
+		getT().commit();
+		if(res.size() == 0) {
+			// --- return null
+			return null;
+		}
+		return res.get(0);
+	}
+
 }

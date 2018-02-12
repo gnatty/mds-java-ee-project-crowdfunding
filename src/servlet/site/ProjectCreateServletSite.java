@@ -12,10 +12,14 @@ import javax.servlet.http.HttpSession;
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
 
+import dao.CategoryDAO;
+import dao.ProjectDAO;
+import dao.UserDAO;
 import utils.ServletUtils;
 import utils.FormErrorUtils;
 import utils.ApiRequestUtils;
 import entity.CategoryEntity;
+import entity.UserEntity;
 
 @WebServlet(name="ProjectCreateServletSite", urlPatterns="/project/create")
 public class ProjectCreateServletSite extends ServletUtils {
@@ -28,19 +32,13 @@ public class ProjectCreateServletSite extends ServletUtils {
 	private static String AMOUNT_EMPTY_VALUE = "Empty Amount.";
 	private static String CATEGORY_EMPTY_VALUE = "Empty Category.";
 	
-	@SuppressWarnings("rawtypes")
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		
-		ApiRequestUtils api = new ApiRequestUtils("get", "/category/list");
-		api.addParameter("exec", "yes");
-		api.run();
-		Gson gson = new Gson();
-		LinkedTreeMap result = gson.fromJson(api.getResponseData() , LinkedTreeMap.class);
-		result = (LinkedTreeMap) result.get("success");
-		System.out.print(result.get("data"));
+		// --- retrieve categories.
+		CategoryDAO catDAO = new CategoryDAO();
+		List<CategoryEntity> categories = catDAO.list();
 		
-		List<CategoryEntity> cat = (List<CategoryEntity>) result.get("data");
-		req.setAttribute("catList", cat);
+		req.setAttribute("catList", categories);
 		req.getRequestDispatcher(fileName).forward(req, resp);
 		return;
 	}
@@ -60,33 +58,44 @@ public class ProjectCreateServletSite extends ServletUtils {
 		if( errors.isError() ) {
 			// --- ERROR.
 			req.setAttribute("errors", errors);
-			req.getRequestDispatcher(fileName).forward(req, resp);
+			this.doGet(req, resp);
 			return;
 		} else {
-			name = req.getParameter("frmName");
-			description = req.getParameter("frmDescription");
-			amount = req.getParameter("frmAmount");
-			category = req.getParameter("frmCategory");
-			
 			HttpSession sess = req.getSession();
 			String token = (String) sess.getAttribute("token");
-			
-			ApiRequestUtils api = new ApiRequestUtils("post", "/project/create");
-			api.addParameter("token", token);
-			api.addParameter("name", name);
-			api.addParameter("description", description);
-			api.addParameter("amount", amount);
-			api.addParameter("category", category);
-			api.run();
-			
-			System.out.println(name);
-			System.out.println(description);
-			System.out.println(amount);
-			System.out.println("category : " + category);
 			System.out.println(token);
-			System.out.println(api.getResponseData());
+			UserDAO userDAO = new UserDAO();
+			UserEntity curUser = userDAO.getUserByToken(token);
 			
-			req.getRequestDispatcher(fileName).forward(req, resp);
+			if(curUser == null) {
+				// --- throw error ?.
+				resp.sendRedirect(req.getContextPath() + "/");
+				return;
+			} else {
+				// insert new project.
+				name = req.getParameter("frmName");
+				description = req.getParameter("frmDescription");
+				amount = req.getParameter("frmAmount");
+				category = req.getParameter("frmCategory");
+				int userId = curUser.getId();
+				int catId = Integer.parseInt(category);
+				String createdAt = this.getCurrentTimestamp();
+				String endAt = "864000";
+				
+				// --- check if category id exist.
+				CategoryDAO catDAO = new CategoryDAO();
+				if(catDAO.isExistById(catId) == false) {
+					// throw error ?.
+					System.out.println("category do not exist");
+					resp.sendRedirect(req.getContextPath() + "/");
+					return;
+				}
+
+				ProjectDAO projectDAO = new ProjectDAO();
+				projectDAO.create(userId, catId, name, description, amount, createdAt, endAt);
+				resp.sendRedirect(req.getContextPath() + "/");
+				return;
+			}
 		}
 	}
 

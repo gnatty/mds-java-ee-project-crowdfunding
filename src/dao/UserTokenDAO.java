@@ -69,5 +69,17 @@ public class UserTokenDAO extends DAO {
 			}
 		}
 	}
-
+	
+	@SuppressWarnings("unchecked")
+	public List<UserTokenEntity> getData(String key) {
+		String query = "SELECT u FROM UserTokenEntity u WHERE u.key = :key";
+		init();
+		getT().begin();
+		List<UserTokenEntity> res = getEm().createQuery(query)
+				.setParameter("key", key)
+				.getResultList();
+		getT().commit();
+		return res;
+	}
+	
 }

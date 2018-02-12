@@ -1,3 +1,4 @@
+<%@ taglib prefix='c' uri='http://java.sun.com/jsp/jstl/core' %>
 <!DOCTYPE html>
 <html>
   <head>
@@ -10,80 +11,91 @@
     />
 
     <style type="text/css">
-      .container-site {
-        margin: 30px auto;
-      }
+.container-site {
+  margin: 30px auto;
+}
 
-      .projectPreview {
-        display: flex;
-        flex-direction: column;
-        flex-wrap: nowrap;
-      }
+.projectPreview {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+}
 
-      .projectPreview > .card > .fakeImg {
-        background-color: rgb(90, 90, 90);
-        width: 100%;
-        height: 140px;
-      }
+.projectPreview > .card > .fakeImg {
+  background-color: rgb(90, 90, 90);
+  width: 100%;
+  height: 140px;
+  display:flex;
+  align-items: center;
+  justify-content: center;
+}
 
-      .projectPreview > .card > .fakeImg > .curAmount {
-        margin: 7px;
-        padding: 7px 20px;
-        border-top-right-radius: 0;
-        border-bottom-right-radius: 0;
-        float: right;
-      }
+.projectPreview > .card > .fakeImg > .title  {
+  font-size: 1.3rem;
+  color: white;
+  text-align: center;
+}
 
-      .projectPreview > .card {
-        flex-grow: 1;
-        display: flex;
-        flex-direction: column;
-        flex-wrap: nowrap;
-        margin: 0 0 25px 0;
-        border-radius: initial;
-      }
+.projectPreview > .card > .fakeImg > .curAmount {
+  margin: 7px;
+  padding: 7px 20px;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
 
-      .projectPreview > .card > p {
-        flex-grow: 1;
-        margin: 7px;
-      }
+.projectPreview > .card {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  margin: 0 0 25px 0;
+  border-radius: initial;
+}
 
-      .projectPreview > .card > button {
-        margin: 7px;
-      }
+.projectPreview > .card > p {
+  flex-grow: 1;
+  margin: 7px;
+}
+
+.projectPreview > .card > a {
+  margin: 7px;
+}
 
 
-      .categoriesList {
-        margin: 0 0 25px 0;
-      }
+.categoriesList {
+  margin: 0 0 25px 0;
+}
 
-      .projectInfo {
-        width: 100%;
-        height: 280px;
-        background-color: rgb(90, 90, 90);
-      }
+.projectInfo {
+  width: 100%;
+  height: 280px;
+  background-color: rgb(90, 90, 90);
+}
 
-      .projectInfo > .container {
-        height: 100%; 
-        width:100%;
-        display:flex;
-        align-items: center;
-        justify-content: center;
-      }
+.projectInfo > .container {
+  height: 100%; 
+  width:100%;
+  display:flex;
+  align-items: center;
+  justify-content: center;
+}
 
-      .projectInfo > .container > .projectName {
+.projectInfo > .container > .projectName {
 
-      }
+}
 
-      .btnHelpSubmit {
-        margin: 10px 0;
-      }
+.btnHelpSubmit {
+  margin: 10px 0;
+}
 
-      .curAmountProjectPage {
-        width: 100%;
-        padding: 15px 0;
-        margin: 0 0 30px 0;
-      }
+.curAmountProjectPage {
+  width: 100%;
+  padding: 15px 0;
+  margin: 0 0 30px 0;
+}
     </style>
 
   </head>
@@ -105,15 +117,25 @@
         <li class="nav-item">
           <a class="nav-link" href="#">Categories</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="${projetDir}/login">Sign in</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="${projetDir}/register">Sign up</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="${projetDir}/logout">Sign out</a>
-        </li>
+
+        <c:if test="${isUserLogged == false}">
+          <li class="nav-item">
+            <a class="nav-link" href="${projetDir}/login">Sign in</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="${projetDir}/register">Sign up</a>
+          </li>
+        </c:if>
+
+        <c:if test="${isUserLogged == true}">
+          <li class="nav-item">
+            <a class="nav-link" href="${projetDir}/project/create">Create a new project</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="${projetDir}/logout">Sign out</a>
+          </li>
+        </c:if>
+
       </ul>
     </div>
   </nav>

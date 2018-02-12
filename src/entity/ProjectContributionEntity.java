@@ -4,16 +4,19 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
 @Table(name="project_contribution")
-public class ProjectContribution implements Serializable {
+public class ProjectContributionEntity implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
 	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name="pcon_id")
 	private int id;
 	
@@ -26,16 +29,16 @@ public class ProjectContribution implements Serializable {
 	@Column(name="pcon_amount")
 	private String amount;
 
-	public ProjectContribution() {
+	public ProjectContributionEntity() {
 	}
 	
-	public ProjectContribution(int user, int project, String amount) {
+	public ProjectContributionEntity(int user, int project, String amount) {
 		this.user = user;
 		this.project = project;
 		this.amount = amount;
 	}
 	
-	public ProjectContribution(int id, int user, int project, String amount) {
+	public ProjectContributionEntity(int id, int user, int project, String amount) {
 		this.id = id;
 		this.user = user;
 		this.project = project;

@@ -1,11 +1,18 @@
 package servlet.site;
 
 import java.io.IOException;
+import java.util.List;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import dao.UserDAO;
+import dao.UserTokenDAO;
+import entity.UserEntity;
+import entity.UserTokenEntity;
 import utils.ServletUtils;
 import utils.FormErrorUtils;
 import utils.ApiRequestUtils;
@@ -43,24 +50,21 @@ public class UserLoginServletSite extends ServletUtils {
 			username = req.getParameter("frmUsername");
 			password = req.getParameter("frmPassword");
 			
-			System.out.println(" -----> POST REQUEST <-----");
-			ApiRequestUtils api = new ApiRequestUtils("post", "/user/login");
-			api.addParameter("username", username);
-			api.addParameter("password", password);
-			api.run();
-			
-			switch(api.getResponseCode()) {
-			case 200:
-				String token = (String) api.getResult().get("token");
-				HttpSession session = req.getSession();
-				session.setAttribute("token", token);
-				resp.sendRedirect(req.getContextPath() + "/");
-				break;
-			case 400:
+			System.out.println(" -----> REQUEST <-----");
+			UserDAO userDAO = new UserDAO();
+			List<UserEntity> res = userDAO.login(username, password);
+			if(res.size() == 0) {
 				errors.add("login", "WRONG_CREDENTIALS", WRONG_CREDENTIALS);
 				req.setAttribute("errors", errors);
 				req.getRequestDispatcher(fileName).forward(req, resp);
-				break;
+				return;
+			} else {
+				UserTokenDAO userTokenDAO = new UserTokenDAO();
+				UserTokenEntity token = userTokenDAO.create(res.get(0).getId(), res.get(0).getUsername());
+				HttpSession session = req.getSession();
+				session.setAttribute("token", token.getKey());
+				resp.sendRedirect(req.getContextPath() + "/");
+				return;
 			}
 		}
 	}

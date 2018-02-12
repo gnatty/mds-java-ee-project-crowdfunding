@@ -12,6 +12,7 @@ import org.apache.http.NameValuePair;
 
 import com.google.gson.JsonObject;
 
+import dao.UserDAO;
 import utils.ServletUtils;
 import utils.FormErrorUtils;
 import utils.ApiRequestUtils;
@@ -75,22 +76,18 @@ public class UserRegisterServletSite extends ServletUtils {
 				return;
 			}
 			
-			System.out.println(" -----> POST REQUEST <-----");
-			ApiRequestUtils api = new ApiRequestUtils("post", "/user/register");
-			api.addParameter("username", username);
-			api.addParameter("password", password);
-			api.addParameter("firstname", firstname);
-			api.addParameter("lastname", lastname);
-			api.addParameter("email", email);
-			api.run();
-			
-			if(api.getResult().get("account").equals("USERNAME_ALREADY_EXIST")) {
+			System.out.println(" -----> REQUEST <-----");
+			UserDAO userDAO = new UserDAO();
+			String res = userDAO.register(username, password, email, firstname, lastname);
+			switch(res) {
+			case "USERNAME_ALREADY_EXIST":
 				errors.add("register", "USERNAME_ALREADY_EXIST", USERNAME_ALREADY_EXIST);
 				req.setAttribute("errors", errors);
 				req.getRequestDispatcher(fileName).forward(req, resp);
-				return;
-			} else {
-				resp.sendRedirect(req.getContextPath() + "/login");
+				break;
+			case "ACCOUNT_CREATED":
+				resp.sendRedirect(req.getContextPath() + "/");
+				break;
 			}
 		}
 	}

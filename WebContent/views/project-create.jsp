@@ -27,7 +27,7 @@
 
           <div class="form-group">
             <label for="inputAddress">Amount</label>
-            <input type="text" class="form-control" name="frmAmount">
+            <input type="number" class="form-control" name="frmAmount">
           </div>
 
           <div class="form-group">

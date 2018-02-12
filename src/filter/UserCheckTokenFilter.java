@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import dao.UserTokenDAO;
 import utils.ApiRequestUtils;
 
 @WebFilter(urlPatterns="/*")
@@ -24,43 +25,44 @@ public class UserCheckTokenFilter implements Filter {
 	@Override
 	public void destroy() {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
-		// --- cast
+		// --- cast.
 		HttpServletRequest req = (HttpServletRequest) request;
 		ServletContext sc = req.getServletContext();
 		HttpSession sess = req.getSession();
 		HttpServletResponse resp = (HttpServletResponse) response;
 		sc.setAttribute("projetDir", req.getContextPath());
 		
+		// --- initialize variable.
 		String reqPath = req.getRequestURI().substring(sc.getContextPath().length());
 		String apiPath = "/api";
 		String loginPage = "/login";
 		String registerPage = "/register";
 		String projectCreatePage = "/project/create";
-		
+		String userToken = (String) sess.getAttribute("token");
 		boolean isUserLogged = false;
+		
 		System.out.println("request path : " + reqPath);
 		
-		sc.setAttribute("projetDir", req.getContextPath());
-
-		String userToken = (String) sess.getAttribute("token");
+		// --- CHECK TOKEN.
 		if(userToken != null) {
-			ApiRequestUtils api = new ApiRequestUtils("post", "/user/check_token");
-			api.addParameter("token", userToken);
-			api.run();
-			if(api.getResult().get("isTokenValid").equals("yes")) {
+			UserTokenDAO userTokenDAO = new UserTokenDAO();
+			if(userTokenDAO.check(userToken)) {
 				isUserLogged = true;
+			} else {
+				sess.removeAttribute("token");
 			}
-			// --- debug check token.
-			System.out.print(api.getResponseData());
 		}
+
+		// ---
+		sc.setAttribute("projetDir", req.getContextPath());
 		sc.setAttribute("isUserLogged", isUserLogged);
 		
+
 		if(reqPath.contains(apiPath)) {
 			chain.doFilter(request, response);
 			return;
